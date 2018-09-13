@@ -2,8 +2,7 @@
 title: vim 入门提高
 key: 20180829
 tags: Vim
-pageview: true
-key: !!vim-20180829
+key: "vim-20180829"
 ---
 
 # 写在开头的话
