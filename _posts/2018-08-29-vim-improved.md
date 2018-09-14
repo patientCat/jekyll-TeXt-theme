@@ -7,6 +7,7 @@ key: "vim-20180829"
 
 # 写在开头的话
 我将vim的入门分为两部分<br/>
+<!--more-->
 第一部分是熟悉各种操作，掌握vim[速查卡](http://michael.peopleofhonoronly.com/vim/)的绿色和黄色操作。<br/>
 第二部分是vimrc的无插件配置以及映射<br/>
 
@@ -14,7 +15,6 @@ key: "vim-20180829"
 1. 使用vimtutor一星期，最后达到5分钟可以过完一遍的水平。
 2. 看完这篇[文章](https://coolshell.cn/articles/5426.html)
 3. 或者可以根据vim速查卡，百度使用，刻意练习。  
-<!--more-->
 <br/>
 
 二者配合使用大概一星期左右时间，代表你进入vim入门一半，剩下来一半在于熟悉vimrc的各种设置以及映射。完成这俩部分才能代表你的vim入门。

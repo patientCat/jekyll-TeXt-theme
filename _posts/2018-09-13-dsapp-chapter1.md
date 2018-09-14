@@ -5,13 +5,15 @@ tags: 数据结构 排序 向量
 key: "dsapp-1-vector-20180913"
 ---
 
+#### github仓库
+[patientCat/dsapp_learn](https://github.com/patientCat/dsapp_learn)
+<!--more-->
 # 向量
 根据基本的概率论知识，要求样本随机，且元素需要足够大，来保证其分布。 <br/> 
 实际过程中，插值查找往往使用在大规模下，中小规模使用二分查找或者顺序查找 <br/> 
 
 ## 简介
 向量本身其是就是一个封装了的数组。或者说是抽象的数组。使我们在使用的时候不用在意数组的大小。
-<!--more-->
 
 ## ADT 与成员
 
