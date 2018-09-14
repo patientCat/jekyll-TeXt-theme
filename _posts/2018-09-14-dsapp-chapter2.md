@@ -8,12 +8,12 @@ key: "dsapp-2-list-20180914"
 #### github仓库
 [patientCat/dsapp_learn](https://github.com/patientCat/dsapp_learn)
 <!--more-->
----
+
 # 列表
 stl中的列表实际上是双向列表
 
-
 ## 列表节点ADT
+
 | 成员 | 功能 |
 | --- | --- |
 | data | 数据域 |
