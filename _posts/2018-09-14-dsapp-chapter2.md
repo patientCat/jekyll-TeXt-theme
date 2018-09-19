@@ -1,6 +1,5 @@
 ---
 title: 邓俊辉数据结构学习-2-列表 
-key: 20180914
 tags: 数据结构 排序 列表
 key: "dsapp-2-list-20180914"
 ---
@@ -444,4 +443,225 @@ List<T>::merge(Pos(T) p, int mid, int n)
 3. 交换指针的前驱后继
 4. 交换数据域
 
-代码不再提供，告诉大家思路。源码在我的github里。
+```cpp
+template <typename T>
+void 
+List<T>::reverse()
+{
+    Pos(T) first = _header;
+    Pos(T) second = _header->succ; 
+    while(second != _trailer)
+    {
+        first->succ = first->pred;
+        first->pred = second; 
+        first = second;
+        second = second->succ;   
+    }
+    first->succ = first->pred;
+    first->pred = second; 
+    _trailer->succ = _trailer->pred;
+    _trailer->pred = nullptr;
+    std::swap(_header, _trailer);   
+}
+template <typename T>
+void 
+List<T>::reverse2()
+{
+    Pos(T) p = _header;
+    Pos(T) q = _header->succ; 
+    while(p != _trailer)
+    {
+        p->pred = q;
+        p = q;
+        q = q->succ;  
+    }
+    _trailer->pred = nullptr;  
+    p = _header;
+    q = _header->succ;
+    while(p != _trailer)
+    {
+        q->succ = p;
+        p = q;
+        q = p->pred;  
+    } 
+    _header->succ = nullptr; 
+    std::swap(_header, _trailer); 
+}
+
+//交换指针
+template <typename T>
+void 
+List<T>::reverse3()
+{
+    Pos(T) p = _header;
+    for(; p; p = p->pred)
+    {
+        std::swap(p->pred, p->succ);
+    }
+    std::swap(_header, _trailer);     
+}
+
+// 交换数据
+template <typename T>
+void 
+List<T>::reverse4()
+{
+    Pos(T) p = _header;
+    Pos(T) q = _trailer;
+    while(1)
+    {
+        p = p->succ;  
+        if( p == q)
+            break;
+        q = q->pred;
+        if( p == q)
+            break;
+        std::swap(p->data, q->data);    
+    }
+}
+```
+这个其实只要画好图，就很容易理解。 <br/>  
+单链表逆置同理，但只能利用第一个思想，即利用俩个指针，一个指向pre, 一个指向curr, 一个指向next <br/> 
+```cpp
+// 虚拟head, tail 
+curr = pre = NULL;
+next = head;
+while(next != NULL)
+{
+    pre = curr;
+    curr = next;
+    next = next->succ;
+    curr->succ = pre;
+}
+swap(head, tail);
+```
+
+### 孪生栈的实现
+需要注意的是，因为我们底层采取vector实现，比如
+```cpp
+vector<int > ivec;
+ivec.reserve(10);
+ivec[9] = 1;
+// 注意此时迭代器和size都不会发生任何变化。
+ivec.reserve(20);
+// 此时ivec会将ivec[1]抹去成一个随机值
+```
+```cpp
+vector<int > ivec;
+ivec.reserve(10);
+ivec.push_back(10);
+ivec.push_back(10);
+ivec.push_back(10);
+ivec.reserve(20);
+// 此时ivec中的3个10不会被抹去。根据stl源码很容易理解这个点
+```
+上面算是一个小坑，所以导致我们不能使用算法copy，只能手动复制。此时我们就完全将vector看做一个可变数组，只有reserve和capacity
+俩个接口供给我们调用。
+```cpp
+class TwinStack 
+{ 
+public: 
+    TwinStack () {
+        _data.reserve(initialStackSize);
+        _top1 = -1;
+        _top2 = _data.capacity();
+        _size = 0;
+    }
+    void push(char flg , int e);
+    int size()const {   return _size;   }
+    int top1()const {   if(_top1 > -1)return _data[_top1];  }
+    int top2()const {   if((size_t)_top2 < _data.capacity()) return _data[_top2];   }
+
+//private:
+    void expand();
+//private: 
+    vector<int> _data;
+    int _top1;
+    int _top2;
+    int _size;
+    bool full()const;
+    static int initialStackSize;
+}; 
+
+int TwinStack::initialStackSize = 5;
+
+bool 
+TwinStack::full()const
+{
+    if(_top1 + 1 == _top2)
+        return true;
+    return false;
+}
+
+void 
+TwinStack::push(char flg , int e)
+{
+    expand();
+    if(flg)
+    {
+        _data[++_top1] = e;
+        ++_size;
+    }
+    else{
+        _data[--_top2] = e;
+        ++_size;
+    }
+}
+
+void
+TwinStack::expand()
+{
+    if(full())
+    {
+        int oldcapacity = _data.capacity();
+        int capacity = 2 * oldcapacity;
+        vector<int> save;
+        for(int i = 0; i < oldcapacity; ++i)
+            save.push_back(_data[i]);
+        _data.reserve(capacity);
+        for(int i = 0; i < capacity; ++i)
+        {
+            _data[i] = 0;
+        }
+        for(int i = 0; i < oldcapacity; ++i)
+        {
+            _data[i] = save[i];
+        }
+        int i, j;
+        if(_top2 < oldcapacity)
+        {
+            for(i = capacity - 1, j = oldcapacity - 1; j >= _top2; --i, --j)
+            {
+                _data[i] = _data[j];
+            }
+            _top2 = ++i;
+        }
+        else{
+             _top2 = capacity;
+        }
+    }
+}
+
+void test0()
+{
+    TwinStack ts;
+    srand(time(NULL));
+    for(int i = 0; i < 12; ++i)
+    {
+        ts.push(rand() % 2, i); 
+    }
+    cout << "栈中实际的数目size:" << ts.size() << endl;
+    cout << "栈的容量capacity:" << ts._data.capacity() << endl;
+    for(int i = 0; i < ts._data.capacity() ;  ++i)
+    {
+        cout << ts._data[i] << endl;
+    }
+    cout << ts.top1() << "  " << ts.top2() << endl;
+}
+int main()
+{
+    test0();
+    return 0;
+}
+
+```

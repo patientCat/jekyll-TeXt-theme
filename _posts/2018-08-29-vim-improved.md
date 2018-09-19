@@ -1,6 +1,5 @@
 ---
 title: vim 入门提高
-key: 20180829
 tags: Vim
 key: "vim-20180829"
 ---
